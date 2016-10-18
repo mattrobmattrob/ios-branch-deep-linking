@@ -10,6 +10,7 @@
 #import <Foundation/Foundation.h>
 #import "Branch.h"
 
+
 @interface Branch (iAd)
 - (void) checkAppleSearchAttributionWithCompletion:
     (void (^)(NSDictionary *attributionDetails, NSError *error))completion;
