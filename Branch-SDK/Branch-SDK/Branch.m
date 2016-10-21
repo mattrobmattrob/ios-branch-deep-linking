@@ -35,6 +35,8 @@
 #import "BranchRegisterViewRequest.h"
 #import "BranchContentDiscoverer.h"
 
+#import <iAd/iAd.h>
+
 //Fabric
 #import "../Fabric/FABKitProtocol.h"
 #import "../Fabric/Fabric+FABKits.h"
@@ -337,7 +339,9 @@ NSString * const BNCShareCompletedEvent = @"Share Completed";
             self.preferenceHelper.universalLinkUrl = branchUrlFromPush;
         }
     }
-    
+
+    [self checkAppleSearchAttributionWithCompletion:nil];
+
     if ([BNCSystemObserver getOSVersion].integerValue >= 8) {
         if (![options.allKeys containsObject:UIApplicationLaunchOptionsURLKey] && ![options.allKeys containsObject:UIApplicationLaunchOptionsUserActivityDictionaryKey]) {
             // If Facebook SDK is present, call deferred app link check here
@@ -1370,5 +1374,30 @@ NSString * const BNCShareCompletedEvent = @"Share Completed";
 + (NSString *)kitDisplayVersion {
 	return @"0.12.12";
 }
+
+#pragma mark - iAD
+
+- (void) checkAppleSearchAttributionWithCompletion:
+        (void (^)(NSDictionary *attributionDetails, NSError *error))completion
+    {
+    Class ADClientClass = NSClassFromString(@"ADClient");
+    if (!ADClientClass)
+        {
+        NSError *error =
+            [NSError errorWithDomain:BNCErrorDomain
+                code:BNCiAdNotAvailable userInfo:nil];
+        if (completion)
+            completion(nil, error);
+        return;
+        }
+    [[ADClientClass sharedClient]
+        requestAttributionDetailsWithBlock:
+        ^ (NSDictionary *details, NSError *error)
+            {
+            NSLog(@"iAd Attribution. Error: %@ info:\n%@", error, details);
+            if (completion)
+                completion(details, error);
+            }];
+    }
 
 @end

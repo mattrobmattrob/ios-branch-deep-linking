@@ -11,6 +11,8 @@
 #import "BNCPreferenceHelper.h"
 #import "BNCSystemObserver.h"
 #import "BranchConstants.h"
+#import <WebKit/WebKit.h>
+#import "BRDebug.h"
 
 // Stub the class for older Xcode versions, methods don't actually do anything.
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
@@ -119,7 +121,17 @@ NSInteger const ABOUT_30_DAYS_TIME_IN_SECONDS = 60 * 60 * 24 * 30;
         self.requestInProgress = NO;
         return;
     }
-    
+
+    UIWebView *uwv = [[UIWebView alloc] initWithFrame:CGRectZero];
+    WKWebView *w = [[WKWebView alloc] initWithFrame:CGRectZero];
+    NSString *ua = [w customUserAgent];
+    NSString *d = BRNSStringFromInstanceDump(w);
+
+    NSString *userAgent = 
+        [[[UIWebView alloc] 
+            initWithFrame:CGRectZero] 
+                stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+
     Class SFSafariViewControllerClass = NSClassFromString(@"SFSafariViewController");
     Class UIApplicationClass = NSClassFromString(@"UIApplication");
     if (SFSafariViewControllerClass) {
