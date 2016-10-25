@@ -1372,7 +1372,7 @@ NSString * const BNCShareCompletedEvent = @"Share Completed";
 }
 
 + (NSString *)kitDisplayVersion {
-	return @"0.12.12";
+	return @"0.12.13";
 }
 
 #pragma mark - iAD
